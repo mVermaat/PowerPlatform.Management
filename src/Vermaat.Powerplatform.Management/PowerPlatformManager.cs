@@ -30,8 +30,8 @@ namespace Vermaat.PowerPlatform.Management
         public void GetEnvironments()
         {
             //var result = _httpClient.GetAsync($"https://{_endpointInfo.BapEndpoint}/providers/Microsoft.BusinessAppPlatform/environments?`$expand=permissions&api-version={_apiVersion}").Result;
-            var result = _httpClient.GetAsync($"https://{_endpointInfo.PowerAppEndpoint}/providers/Microsoft.PowerApps/environments?`$expand=permissions&api-version={_apiVersion}").Result;
-
+            //var result = _httpClient.GetAsync($"https://{_endpointInfo.PowerAppEndpoint}/providers/Microsoft.PowerApps/environments?`$expand=permissions&api-version={_apiVersion}").Result;
+            var result = _httpClient.GetAsync($"https://{_endpointInfo.BapEndpoint}/providers/Microsoft.BusinessAppPlatform/scopes/admin/environments?$expand=permissions&api-version={_apiVersion}").Result;
 
             var content = result.Content.ReadAsStringAsync().Result;
             
