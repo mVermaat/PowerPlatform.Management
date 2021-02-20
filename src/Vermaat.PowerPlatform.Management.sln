@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vermaat.Powerplatform.Management", "Vermaat.Powerplatform.Management\Vermaat.Powerplatform.Management.csproj", "{9A131DA8-EC76-4D06-BFD6-A29F86BCC7DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vermaat.PowerPlatform.Management", "Vermaat.Powerplatform.Management\Vermaat.PowerPlatform.Management.csproj", "{9A131DA8-EC76-4D06-BFD6-A29F86BCC7DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vermaat.PowerPlatform.Management.Test", "Vermaat.PowerPlatform.Management.Test\Vermaat.PowerPlatform.Management.Test.csproj", "{C9DE90BF-2CD6-4971-B4C5-1A8A05E6EFAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{9A131DA8-EC76-4D06-BFD6-A29F86BCC7DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A131DA8-EC76-4D06-BFD6-A29F86BCC7DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A131DA8-EC76-4D06-BFD6-A29F86BCC7DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9DE90BF-2CD6-4971-B4C5-1A8A05E6EFAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9DE90BF-2CD6-4971-B4C5-1A8A05E6EFAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9DE90BF-2CD6-4971-B4C5-1A8A05E6EFAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9DE90BF-2CD6-4971-B4C5-1A8A05E6EFAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
