@@ -24,14 +24,16 @@ namespace Vermaat.PowerPlatform.Management
             _httpClient = new HttpClient();
             
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _session.Token);
-            //_httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("PowerShell cmdlets 1.0"));
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
         }
 
         public void GetEnvironments()
         {
-            var result = _httpClient.GetAsync($"https://{_endpointInfo.BapEndpoint}/providers/Microsoft.BusinessAppPlatform/environments?`$expand=permissions&api-version={_apiVersion}").Result;
+            //var result = _httpClient.GetAsync($"https://{_endpointInfo.BapEndpoint}/providers/Microsoft.BusinessAppPlatform/environments?`$expand=permissions&api-version={_apiVersion}").Result;
+            var result = _httpClient.GetAsync($"https://{_endpointInfo.PowerAppEndpoint}/providers/Microsoft.PowerApps/environments?`$expand=permissions&api-version={_apiVersion}").Result;
 
+
+            var content = result.Content.ReadAsStringAsync().Result;
             
         }
 

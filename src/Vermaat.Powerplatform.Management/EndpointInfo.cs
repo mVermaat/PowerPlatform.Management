@@ -8,6 +8,7 @@ namespace Vermaat.PowerPlatform.Management
     {
         public string BaseUri { get; set; }
         public string BapEndpoint { get; set; }
+        public string PowerAppEndpoint { get; set; }
 
 
 
@@ -18,7 +19,8 @@ namespace Vermaat.PowerPlatform.Management
             => new EndpointInfo()
             {
                 BaseUri = "https://login.windows.net",
-                BapEndpoint = "api.bap.microsoft.com"
+                BapEndpoint = "api.bap.microsoft.com",
+                PowerAppEndpoint = "api.powerapps.com",             
             };
     }
 }

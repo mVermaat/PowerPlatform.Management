@@ -12,5 +12,13 @@ namespace Vermaat.PowerPlatform.Management.Test
             var manager = new PowerPlatformManager(session, EndpointInfo.Prod);
             manager.GetEnvironments();
         }
+
+        [TestMethod]
+        public void TestUserPasswordAuthentication()
+        {
+            var session = PowerPlatformSession.CreateFromUsernamePasswordAsync(EndpointInfo.Prod, Username, Password).Result;
+            var manager = new PowerPlatformManager(session, EndpointInfo.Prod);
+            manager.GetEnvironments();
+        }
     }
 }
