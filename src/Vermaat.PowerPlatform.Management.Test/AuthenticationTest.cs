@@ -8,16 +8,16 @@ namespace Vermaat.PowerPlatform.Management.Test
         [TestMethod]
         public void TestClientSecretAuthentication()
         {
-            var session = PowerPlatformSession.CreateFromClientCredentialsAsync(EndpointInfo.Prod, TenantId, ClientId, ClientSecret).Result;
-            var manager = new PowerPlatformManager(session, EndpointInfo.Prod);
+            var tokenManager = new ClientCredentialTokenManager(EndpointInfo.Prod, TenantId, ClientId, ClientSecret);
+            var manager = new PowerPlatformManager(tokenManager);
             manager.GetEnvironments();
         }
 
         [TestMethod]
         public void TestUserPasswordAuthentication()
         {
-            var session = PowerPlatformSession.CreateFromUsernamePasswordAsync(EndpointInfo.Prod, Username, Password).Result;
-            var manager = new PowerPlatformManager(session, EndpointInfo.Prod);
+            var tokenManager = new UsernamePasswordTokenManager(EndpointInfo.Prod, Username, Password);
+            var manager = new PowerPlatformManager(tokenManager);
             manager.GetEnvironments();
         }
     }

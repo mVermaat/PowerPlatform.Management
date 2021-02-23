@@ -9,7 +9,7 @@ namespace Vermaat.PowerPlatform.Management.Test
     {
         public TestContext TestContext { get; set; }
 
-        protected string TenantId => (string)TestContext.Properties["TenantId"];
+        protected Guid TenantId => Guid.Parse((string)TestContext.Properties["TenantId"]);
         protected string ClientId => (string)TestContext.Properties["ClientId"];
         protected string ClientSecret => (string)TestContext.Properties["ClientSecret"];
         protected string Username => (string)TestContext.Properties["Username"];
