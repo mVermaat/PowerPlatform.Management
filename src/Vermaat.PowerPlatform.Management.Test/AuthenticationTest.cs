@@ -1,3 +1,4 @@
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Vermaat.PowerPlatform.Management.Test
@@ -9,16 +10,17 @@ namespace Vermaat.PowerPlatform.Management.Test
         public void TestClientSecretAuthentication()
         {
             var tokenManager = new ClientCredentialTokenManager(EndpointInfo.Prod, TenantId, ClientId, ClientSecret);
-            var manager = new PowerPlatformManager(tokenManager);
-            manager.GetEnvironments();
+
+            var token = tokenManager.GetToken().Result;
+            token.Should().NotBeNullOrEmpty();
         }
 
         [TestMethod]
         public void TestUserPasswordAuthentication()
         {
             var tokenManager = new UsernamePasswordTokenManager(EndpointInfo.Prod, Username, Password);
-            var manager = new PowerPlatformManager(tokenManager);
-            manager.GetEnvironments();
+            var token = tokenManager.GetToken().Result;
+            token.Should().NotBeNullOrEmpty();
         }
     }
 }

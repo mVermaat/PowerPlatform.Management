@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Vermaat.PowerPlatform.Management
 {
@@ -13,15 +15,31 @@ namespace Vermaat.PowerPlatform.Management
 
         private readonly TokenManager _tokenManager;
         private readonly HttpClient _httpClient;
+        private readonly EndpointInfo _endpointInfo;
         
         private bool disposedValue;
 
         public PowerPlatformManager(TokenManager tokenManager)
         {
             _tokenManager = tokenManager;
+            _endpointInfo = tokenManager.EndpointInfo;
             _httpClient = new HttpClient();
 
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _session.Token);
+        }
+
+        public async Task<string> GetAdminEnvironments()
+        {
+            var response = await SendRequest<string, string>(new HttpRequestMessage()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"https://{_endpointInfo.BapEndpoint}/providers/Microsoft.BusinessAppPlatform/scopes/admin/environments?$expand=permissions&api-version={_apiVersion}")
+            });
+
+            if (response.Success)
+                return response.Content;
+            else
+                throw new InvalidOperationException($"Error: {response.StatusCode}: {response.Error}");
         }
 
         public void GetDefaultEnvironment()
@@ -39,6 +57,25 @@ namespace Vermaat.PowerPlatform.Management
             //if (!result.IsSuccessStatusCode)
             //    throw new Exception(content);
             
+        }
+
+        private async Task<DeserializedResponse<TSuccess,TError>> SendRequest<TSuccess,TError>(HttpRequestMessage request)
+        {
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await _tokenManager.GetToken());
+
+            var response = await _httpClient.SendAsync(request);
+            var result = new DeserializedResponse<TSuccess, TError>()
+            {
+                Success = response.IsSuccessStatusCode,
+                StatusCode = response.StatusCode
+            };
+
+            if (result.Success)
+                result.Content = JsonConvert.DeserializeObject<TSuccess>(await response.Content.ReadAsStringAsync());
+            else
+                result.Error = JsonConvert.DeserializeObject<TError>(await response.Content.ReadAsStringAsync());
+
+            return result;
         }
 
         protected virtual void Dispose(bool disposing)
