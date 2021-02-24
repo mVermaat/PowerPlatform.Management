@@ -71,11 +71,19 @@ namespace Vermaat.PowerPlatform.Management
             };
 
             if (result.Success)
-                result.Content = JsonConvert.DeserializeObject<TSuccess>(await response.Content.ReadAsStringAsync());
+                result.Content = Deserialize<TSuccess>(await response.Content.ReadAsStringAsync());
             else
-                result.Error = JsonConvert.DeserializeObject<TError>(await response.Content.ReadAsStringAsync());
+                result.Error = Deserialize<TError>(await response.Content.ReadAsStringAsync());
 
             return result;
+        }
+
+        private T Deserialize<T>(string text)
+        {
+            if (typeof(T) == typeof(string))
+                return (T)(object)text;
+            else
+                return JsonConvert.DeserializeObject<T>(text);
         }
 
         protected virtual void Dispose(bool disposing)
