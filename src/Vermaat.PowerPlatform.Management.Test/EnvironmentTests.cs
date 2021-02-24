@@ -12,12 +12,14 @@ namespace Vermaat.PowerPlatform.Management.Test
     public class EnvironmentTests : BaseTest
     {
         [TestMethod]
-        public void TestGetAdminEnvironments()
+        public async Task TestGetAdminEnvironments()
         {
             var manager = new PowerPlatformManager(new UsernamePasswordTokenManager(EndpointInfo.Prod, Username, Password));
-            var environments = manager.GetAdminEnvironments().Result;
+            var environments = await manager.GetAdminEnvironments();
 
-            environments.Should().NotBeNullOrEmpty();
+            environments.Should().NotBeNull();
+
+
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Vermaat.PowerPlatform.Management.JsonModels;
 
 namespace Vermaat.PowerPlatform.Management
 {
@@ -28,23 +29,18 @@ namespace Vermaat.PowerPlatform.Management
             //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _session.Token);
         }
 
-        public async Task<string> GetAdminEnvironments()
+        public async Task<Models.Environment[]> GetAdminEnvironments()
         {
-            var response = await SendRequest<string, string>(new HttpRequestMessage()
+            var response = await SendRequest<EnvironmentCollectionJsonModel, string>(new HttpRequestMessage()
             {
                 Method = HttpMethod.Get,
                 RequestUri = new Uri($"https://{_endpointInfo.BapEndpoint}/providers/Microsoft.BusinessAppPlatform/scopes/admin/environments?$expand=permissions&api-version={_apiVersion}")
             });
 
             if (response.Success)
-                return response.Content;
+                return response.Content.ToEnvironmentCollection();
             else
                 throw new InvalidOperationException($"Error: {response.StatusCode}: {response.Error}");
-        }
-
-        public void GetDefaultEnvironment()
-        {
-            //var result = _httpClient.GetAsync($"https://{_endpointInfo.BapEndpoint}/providers/Microsoft.BusinessAppPlatform/environments/~default?`$expand=permissions&api-version={_apiVersion}").Result;
         }
 
         public void GetEnvironments()
