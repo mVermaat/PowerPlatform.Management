@@ -43,16 +43,18 @@ namespace Vermaat.PowerPlatform.Management
                 throw new InvalidOperationException($"Error: {response.StatusCode}: {response.Error}");
         }
 
-        public void GetEnvironments()
+        public async Task<Models.Environment[]> GetEnvironments()
         {
-            //var result = _httpClient.GetAsync($"https://{_endpointInfo.PowerAppEndpoint}/providers/Microsoft.PowerApps/environments?`$expand=permissions&api-version={_apiVersion}").Result;
-            //var result = _httpClient.GetAsync($"https://{_endpointInfo.BapEndpoint}/providers/Microsoft.BusinessAppPlatform/scopes/admin/environments?$expand=permissions&api-version={_apiVersion}").Result;
+            var response = await SendRequest<EnvironmentCollectionJsonModel, string>(new HttpRequestMessage()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"https://{_endpointInfo.PowerAppEndpoint}/providers/Microsoft.PowerApps/environments?`$expand=permissions&api-version={_apiVersion}")
+            });
 
-            //var content = result.Content.ReadAsStringAsync().Result;
-
-            //if (!result.IsSuccessStatusCode)
-            //    throw new Exception(content);
-            
+            if (response.Success)
+                return response.Content.ToEnvironmentCollection();
+            else
+                throw new InvalidOperationException($"Error: {response.StatusCode}: {response.Error}");
         }
 
         private async Task<DeserializedResponse<TSuccess,TError>> SendRequest<TSuccess,TError>(HttpRequestMessage request)
