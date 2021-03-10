@@ -1,8 +1,5 @@
 ﻿using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Vermaat.PowerPlatform.Management
@@ -13,7 +10,7 @@ namespace Vermaat.PowerPlatform.Management
         private readonly string _clientId;
         private readonly string _clientSecret;
 
-        public ClientCredentialTokenManager(EndpointInfo endpointInfo, Guid tenantId, string clientId, string clientSecret ) : base(endpointInfo)
+        public ClientCredentialTokenManager(EndpointInfo endpointInfo, Guid tenantId, string clientId, string clientSecret) : base(endpointInfo)
         {
             _tenantId = tenantId;
             _clientId = clientId;

@@ -1,10 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 using Vermaat.PowerPlatform.Management.JsonModels;
 
@@ -17,7 +14,7 @@ namespace Vermaat.PowerPlatform.Management
         private readonly TokenManager _tokenManager;
         private readonly HttpClient _httpClient;
         private readonly EndpointInfo _endpointInfo;
-        
+
         private bool disposedValue;
 
         public PowerPlatformManager(TokenManager tokenManager)
@@ -57,7 +54,27 @@ namespace Vermaat.PowerPlatform.Management
                 throw new InvalidOperationException($"Error: {response.StatusCode}: {response.Error}");
         }
 
-        private async Task<DeserializedResponse<TSuccess,TError>> SendRequest<TSuccess,TError>(HttpRequestMessage request)
+        public async Task<string> GetConnections(Models.Environment environment)
+        {
+            //var response = await SendRequest<string, string>(new HttpRequestMessage()
+            //{
+            //    Method = HttpMethod.Get,
+            //    RequestUri = new Uri($"https://{_endpointInfo.PowerAppEndpoint}/providers/Microsoft.PowerApps/scopes/admin/environments/{environment.PowerAppIdentifier}/connections?api-version={_apiVersion}")
+            //});
+
+            var response = await SendRequest<string, string>(new HttpRequestMessage()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"https://{_endpointInfo.PowerAppEndpoint}/providers/Microsoft.PowerApps/connections?api-version={_apiVersion}&$filter=environment eq '{environment.PowerAppIdentifier}'")
+            });
+
+            if (response.Success)
+                return response.Content;
+            else
+                throw new InvalidOperationException($"Error: {response.StatusCode}: {response.Error}");
+        }
+
+        private async Task<DeserializedResponse<TSuccess, TError>> SendRequest<TSuccess, TError>(HttpRequestMessage request)
         {
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await _tokenManager.GetToken());
 

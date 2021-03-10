@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Vermaat.PowerPlatform.Management
+﻿namespace Vermaat.PowerPlatform.Management
 {
     public class EndpointInfo
     {
@@ -20,7 +16,7 @@ namespace Vermaat.PowerPlatform.Management
             {
                 BaseUri = "https://login.windows.net",
                 BapEndpoint = "api.bap.microsoft.com",
-                PowerAppEndpoint = "api.powerapps.com",             
+                PowerAppEndpoint = "api.powerapps.com",
             };
     }
 }

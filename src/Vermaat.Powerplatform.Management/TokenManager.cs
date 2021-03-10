@@ -1,7 +1,5 @@
 ﻿using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Vermaat.PowerPlatform.Management
@@ -29,6 +27,6 @@ namespace Vermaat.PowerPlatform.Management
         }
 
         protected abstract Task<AuthenticationResult> GetNewToken();
-        
+
     }
 }

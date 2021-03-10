@@ -1,9 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Vermaat.PowerPlatform.Management.Test
@@ -19,12 +16,12 @@ namespace Vermaat.PowerPlatform.Management.Test
 
             environments.Should().NotBeNull();
 
-            foreach(var environment in environments)
+            foreach (var environment in environments)
             {
                 environment.PowerAppIdentifier.Should().NotBeNullOrWhiteSpace();
                 environment.Name.Should().NotBeNullOrWhiteSpace();
 
-                if(environment.IsDefault)
+                if (environment.IsDefault)
                 {
                     environment.DataverseIdentifier.Should().BeNull();
                     environment.DataverseUrl.Should().BeNull();

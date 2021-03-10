@@ -1,9 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Vermaat.PowerPlatform.Management.JsonModels
 {
@@ -32,7 +29,7 @@ namespace Vermaat.PowerPlatform.Management.JsonModels
                 Name = Properties.DisplayName
             };
 
-            if(!result.IsDefault)
+            if (!result.IsDefault)
             {
                 result.DataverseIdentifier = Properties.LinkedEnvironmentMetadata.ResourceId;
                 result.DataverseUrl = Properties.LinkedEnvironmentMetadata.InstanceUrl;
