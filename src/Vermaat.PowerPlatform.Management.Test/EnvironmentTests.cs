@@ -11,8 +11,8 @@ namespace Vermaat.PowerPlatform.Management.Test
         [TestMethod]
         public async Task TestGetAdminEnvironments()
         {
-            var manager = new PowerPlatformManager(new UsernamePasswordTokenManager(EndpointInfo.Prod, Username, Password));
-            var environments = await manager.GetAdminEnvironments();
+            var manager = new AdminPowerPlatformManager(new UsernamePasswordTokenManager(EndpointInfo.Prod, Username, Password));
+            var environments = await manager.GetEnvironments();
 
             environments.Should().NotBeNull();
 
@@ -37,7 +37,7 @@ namespace Vermaat.PowerPlatform.Management.Test
         [TestMethod]
         public async Task TestGetEnvironments()
         {
-            var manager = new PowerPlatformManager(new UsernamePasswordTokenManager(EndpointInfo.Prod, Username, Password));
+            var manager = new MakerPowerPlatformManager(new UsernamePasswordTokenManager(EndpointInfo.Prod, Username, Password));
             var environments = await manager.GetEnvironments();
 
             environments.Should().NotBeNull();

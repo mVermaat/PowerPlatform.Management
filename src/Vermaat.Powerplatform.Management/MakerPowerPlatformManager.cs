@@ -7,7 +7,7 @@ using Vermaat.PowerPlatform.Management.JsonModels;
 
 namespace Vermaat.PowerPlatform.Management
 {
-    public class PowerPlatformManager : IDisposable
+    public class MakerPowerPlatformManager : IDisposable
     {
         private const string _apiVersion = "2016-11-01";
 
@@ -17,13 +17,11 @@ namespace Vermaat.PowerPlatform.Management
 
         private bool disposedValue;
 
-        public PowerPlatformManager(TokenManager tokenManager)
+        public MakerPowerPlatformManager(TokenManager tokenManager)
         {
             _tokenManager = tokenManager;
             _endpointInfo = tokenManager.EndpointInfo;
             _httpClient = new HttpClient();
-
-            //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _session.Token);
         }
 
         public async Task<Models.Environment[]> GetAdminEnvironments()
@@ -50,6 +48,26 @@ namespace Vermaat.PowerPlatform.Management
 
             if (response.Success)
                 return response.Content.ToEnvironmentCollection();
+            else
+                throw new InvalidOperationException($"Error: {response.StatusCode}: {response.Error}");
+        }
+
+        public async Task<string> GetPowerAutomates(Models.Environment environment)
+        {
+            // "https://{flowEndpoint}/providers/Microsoft.ProcessSimple/environments/{environment}/flows/{flowName}?api-version={apiVersion}"
+            //var response = await SendRequest<string, string>(new HttpRequestMessage()
+            //{
+            //    Method = HttpMethod.Get,
+            //    RequestUri = new Uri($"https://{_endpointInfo.PowerAutomateEndpoint}/providers/Microsoft.ProcessSimple/scopes/admin/environments/{environment.PowerAppIdentifier}/flows?api-version={_apiVersion}")
+            //});
+            var response = await SendRequest<string, string>(new HttpRequestMessage()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"https://{_endpointInfo.PowerAutomateEndpoint}/providers/Microsoft.ProcessSimple/environments/{environment.PowerAppIdentifier}/flows?api-version={_apiVersion}")
+            });
+
+            if (response.Success)
+                return response.Content;
             else
                 throw new InvalidOperationException($"Error: {response.StatusCode}: {response.Error}");
         }
