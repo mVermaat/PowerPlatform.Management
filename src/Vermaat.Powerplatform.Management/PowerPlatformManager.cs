@@ -54,26 +54,6 @@ namespace Vermaat.PowerPlatform.Management
                 throw new InvalidOperationException($"Error: {response.StatusCode}: {response.Error}");
         }
 
-        public async Task<string> GetConnections(Models.Environment environment)
-        {
-            //var response = await SendRequest<string, string>(new HttpRequestMessage()
-            //{
-            //    Method = HttpMethod.Get,
-            //    RequestUri = new Uri($"https://{_endpointInfo.PowerAppEndpoint}/providers/Microsoft.PowerApps/scopes/admin/environments/{environment.PowerAppIdentifier}/connections?api-version={_apiVersion}")
-            //});
-
-            var response = await SendRequest<string, string>(new HttpRequestMessage()
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://{_endpointInfo.PowerAppEndpoint}/providers/Microsoft.PowerApps/connections?api-version={_apiVersion}&$filter=environment eq '{environment.PowerAppIdentifier}'")
-            });
-
-            if (response.Success)
-                return response.Content;
-            else
-                throw new InvalidOperationException($"Error: {response.StatusCode}: {response.Error}");
-        }
-
         private async Task<DeserializedResponse<TSuccess, TError>> SendRequest<TSuccess, TError>(HttpRequestMessage request)
         {
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await _tokenManager.GetToken());
@@ -101,6 +81,8 @@ namespace Vermaat.PowerPlatform.Management
                 return JsonConvert.DeserializeObject<T>(text);
         }
 
+        #region IDisposible
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -118,5 +100,7 @@ namespace Vermaat.PowerPlatform.Management
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
+
+        #endregion
     }
 }
