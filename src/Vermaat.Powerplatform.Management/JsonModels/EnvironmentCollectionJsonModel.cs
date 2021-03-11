@@ -20,7 +20,7 @@ namespace Vermaat.PowerPlatform.Management.JsonModels
         public string Name { get; set; }
         public EnvironmentPropertiesJsonModel Properties { get; set; }
 
-        internal Models.Environment ToEnvironment()
+        public Models.Environment ToEnvironment()
         {
             var result = new Models.Environment
             {
@@ -29,7 +29,7 @@ namespace Vermaat.PowerPlatform.Management.JsonModels
                 Name = Properties.DisplayName
             };
 
-            if (!result.IsDefault)
+            if (Properties.LinkedEnvironmentMetadata != null)
             {
                 result.DataverseIdentifier = Properties.LinkedEnvironmentMetadata.ResourceId;
                 result.DataverseUrl = Properties.LinkedEnvironmentMetadata.InstanceUrl;

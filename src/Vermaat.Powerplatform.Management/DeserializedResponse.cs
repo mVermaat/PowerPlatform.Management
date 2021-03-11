@@ -2,7 +2,7 @@
 
 namespace Vermaat.PowerPlatform.Management
 {
-    internal class DeserializedResponse<TSuccess, TError>
+    public class DeserializedResponse<TSuccess, TError>
     {
         public bool Success { get; set; }
         public HttpStatusCode StatusCode { get; set; }

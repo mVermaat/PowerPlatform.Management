@@ -3,55 +3,38 @@ using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Vermaat.PowerPlatform.Management.JsonModels;
 
 namespace Vermaat.PowerPlatform.Management
 {
-    public class PowerPlatformManager : IDisposable
+    public abstract class PowerPlatformManager : IDisposable
     {
-        private const string _apiVersion = "2016-11-01";
+        protected const string _apiVersion = "2016-11-01";
 
-        private readonly TokenManager _tokenManager;
-        private readonly HttpClient _httpClient;
-        private readonly EndpointInfo _endpointInfo;
+        protected TokenManager _tokenManager { get; private set; }
+        protected HttpClient _httpClient { get; private set; }
+        protected EndpointInfo _endpointInfo { get; private set; }
 
-        private bool disposedValue;
+        private bool _disposedValue;
 
         public PowerPlatformManager(TokenManager tokenManager)
         {
             _tokenManager = tokenManager;
             _endpointInfo = tokenManager.EndpointInfo;
             _httpClient = new HttpClient();
-
-            //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _session.Token);
         }
 
-        public async Task<Models.Environment[]> GetAdminEnvironments()
+        protected async Task SendRequest(HttpRequestMessage request)
+            => await SendRequest<string, string>(request, r => r);
+
+        protected async Task<TConverted> SendRequest<TSuccess, TConverted>(HttpRequestMessage request,
+            Func<TSuccess, TConverted> convertSuccessFunc)
         {
-            var response = await SendRequest<EnvironmentCollectionJsonModel, string>(new HttpRequestMessage()
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://{_endpointInfo.BapEndpoint}/providers/Microsoft.BusinessAppPlatform/scopes/admin/environments?$expand=permissions&api-version={_apiVersion}")
-            });
+            var response = await SendRequest<TSuccess, string>(request);
 
             if (response.Success)
-                return response.Content.ToEnvironmentCollection();
+                return convertSuccessFunc(response.Content);
             else
-                throw new InvalidOperationException($"Error: {response.StatusCode}: {response.Error}");
-        }
-
-        public async Task<Models.Environment[]> GetEnvironments()
-        {
-            var response = await SendRequest<EnvironmentCollectionJsonModel, string>(new HttpRequestMessage()
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://{_endpointInfo.PowerAppEndpoint}/providers/Microsoft.PowerApps/environments?`$expand=permissions&api-version={_apiVersion}")
-            });
-
-            if (response.Success)
-                return response.Content.ToEnvironmentCollection();
-            else
-                throw new InvalidOperationException($"Error: {response.StatusCode}: {response.Error}");
+                throw new InvalidOperationException($"API returned {response.StatusCode}: {response.Error}");
         }
 
         private async Task<DeserializedResponse<TSuccess, TError>> SendRequest<TSuccess, TError>(HttpRequestMessage request)
@@ -85,13 +68,13 @@ namespace Vermaat.PowerPlatform.Management
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_disposedValue)
             {
                 if (disposing)
                 {
                     _httpClient.Dispose();
                 }
-                disposedValue = true;
+                _disposedValue = true;
             }
         }
 
