@@ -38,16 +38,30 @@ namespace Vermaat.PowerPlatform.Management
                 throw new InvalidOperationException($"Error: {response.StatusCode}: {response.Error}");
         }
 
-        public async Task<string> GetPowerAutomates(Models.Environment environment)
+        public async Task<Models.PowerAutomate[]> GetPowerAutomates(Models.Environment environment)
         {
-            var response = await SendRequest<string, string>(new HttpRequestMessage()
+            var response = await SendRequest<PowerAutomateCollectionJsonModel, string>(new HttpRequestMessage()
             {
                 Method = HttpMethod.Get,
                 RequestUri = new Uri($"https://{_endpointInfo.PowerAutomateEndpoint}/providers/Microsoft.ProcessSimple/scopes/admin/environments/{environment.PowerAppIdentifier}/flows?api-version={_apiVersion}")
             });
 
             if (response.Success)
-                return response.Content;
+                return response.Content.ToPowerAutomateCollection();
+            else
+                throw new InvalidOperationException($"Error: {response.StatusCode}: {response.Error}");
+        }
+
+        public async Task<Models.PowerAutomateRun[]> GetPowerAutomateRunHistory(Models.Environment environment, Models.PowerAutomate powerAutomate)
+        {
+            var response = await SendRequest<PowerAutomateRunCollectionJsonModel, string>(new HttpRequestMessage()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"https://{_endpointInfo.PowerAutomateEndpoint}/providers/Microsoft.ProcessSimple/scopes/admin/environments/{environment.PowerAppIdentifier}/flows/{powerAutomate.PowerAppIdentifier}/runs?api-version={_apiVersion}")
+            });
+
+            if (response.Success)
+                return response.Content.ToPowerAutomateCollection();
             else
                 throw new InvalidOperationException($"Error: {response.StatusCode}: {response.Error}");
         }
