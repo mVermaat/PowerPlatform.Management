@@ -1,6 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Vermaat.PowerPlatform.Management.Test
@@ -11,7 +9,7 @@ namespace Vermaat.PowerPlatform.Management.Test
         [TestMethod]
         public async Task TestGetRunHistory()
         {
-            
+
         }
     }
 }

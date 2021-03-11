@@ -19,7 +19,7 @@ namespace Vermaat.PowerPlatform.Management.JsonModels
     internal class PowerAutomateJsonModel
     {
         public Guid Name { get; set; }
-        
+
         public PowerAutomateJsonModelProperty Properties { get; set; }
 
         public PowerAutomate ToPowerAutomate()
