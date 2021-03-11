@@ -23,7 +23,18 @@ namespace Vermaat.PowerPlatform.Management
             _httpClient = new HttpClient();
         }
 
-        protected async Task<DeserializedResponse<TSuccess, TError>> SendRequest<TSuccess, TError>(HttpRequestMessage request)
+        protected async Task<TConverted> SendRequest<TSuccess, TConverted>(HttpRequestMessage request, 
+            Func<TSuccess, TConverted> convertSuccessFunc)
+        {
+            var response = await SendRequest<TSuccess, string>(request);
+
+            if (response.Success)
+                return convertSuccessFunc(response.Content);
+            else
+                throw new InvalidOperationException($"API returned {response.StatusCode}: {response.Error}");
+        }
+
+        private async Task<DeserializedResponse<TSuccess, TError>> SendRequest<TSuccess, TError>(HttpRequestMessage request)
         {
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await _tokenManager.GetToken());
 
