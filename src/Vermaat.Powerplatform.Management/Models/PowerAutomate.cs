@@ -13,7 +13,7 @@ namespace Vermaat.PowerPlatform.Management.Models
 
     public enum PowerAutomateState
     {
-        Started, Draft
+        Started, Stopped
     }
 
 }

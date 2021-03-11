@@ -1,7 +1,9 @@
 ﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Environment = Vermaat.PowerPlatform.Management.Models.Environment;
 
 namespace Vermaat.PowerPlatform.Management.Test
 {
@@ -14,24 +16,7 @@ namespace Vermaat.PowerPlatform.Management.Test
             var manager = new AdminPowerPlatformManager(new UsernamePasswordTokenManager(EndpointInfo.Prod, Username, Password));
             var environments = await manager.GetEnvironments();
 
-            environments.Should().NotBeNull();
-
-            foreach (var environment in environments)
-            {
-                environment.PowerAppIdentifier.Should().NotBeNullOrWhiteSpace();
-                environment.Name.Should().NotBeNullOrWhiteSpace();
-
-                if (environment.IsDefault)
-                {
-                    environment.DataverseIdentifier.Should().BeNull();
-                    environment.DataverseUrl.Should().BeNull();
-                }
-                else
-                {
-                    environment.DataverseIdentifier.Should().HaveValue().And.NotBe(Guid.Empty);
-                    environment.DataverseUrl.Should().NotBeNullOrWhiteSpace();
-                }
-            }
+            ShouldMatch(environments);
         }
 
         [TestMethod]
@@ -39,25 +24,25 @@ namespace Vermaat.PowerPlatform.Management.Test
         {
             var manager = new MakerPowerPlatformManager(new UsernamePasswordTokenManager(EndpointInfo.Prod, Username, Password));
             var environments = await manager.GetEnvironments();
+            ShouldMatch(environments);
+        }
 
-            environments.Should().NotBeNull();
+        private void ShouldMatch(Environment[] actualEnvironments)
+        {
+            actualEnvironments.Should().NotBeNull();
+            actualEnvironments.Should().HaveCount(Environments.Count);
 
-            foreach (var environment in environments)
+            foreach (var expectedEnvironment in Environments)
             {
-                environment.PowerAppIdentifier.Should().NotBeNullOrWhiteSpace();
-                environment.Name.Should().NotBeNullOrWhiteSpace();
+                var actualEnvironment = actualEnvironments.FirstOrDefault(e => e.PowerAppIdentifier.Equals(expectedEnvironment.PowerAppIdentifier, StringComparison.OrdinalIgnoreCase));
+                actualEnvironment.Should().NotBeNull($"Environment {expectedEnvironment.PowerAppIdentifier} doesn't exist");
 
-                if (environment.IsDefault)
-                {
-                    environment.DataverseIdentifier.Should().BeNull();
-                    environment.DataverseUrl.Should().BeNull();
-                }
-                else
-                {
-                    environment.DataverseIdentifier.Should().HaveValue().And.NotBe(Guid.Empty);
-                    environment.DataverseUrl.Should().NotBeNullOrWhiteSpace();
-                }
+                actualEnvironment.DataverseIdentifier.Should().Be(expectedEnvironment.DataverseIdentifier);
+                actualEnvironment.DataverseUrl.Should().BeEquivalentTo(expectedEnvironment.DataverseUrl);
+                actualEnvironment.IsDefault.Should().Be(expectedEnvironment.IsDefault);
+                actualEnvironment.Name.Should().BeEquivalentTo(expectedEnvironment.Name);
             }
         }
+
     }
 }

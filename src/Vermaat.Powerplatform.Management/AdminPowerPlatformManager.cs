@@ -2,6 +2,9 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using Vermaat.PowerPlatform.Management.JsonModels;
+using Vermaat.PowerPlatform.Management.Models;
+using Environment = Vermaat.PowerPlatform.Management.Models.Environment;
+
 
 namespace Vermaat.PowerPlatform.Management
 {
@@ -24,7 +27,7 @@ namespace Vermaat.PowerPlatform.Management
             return await SendRequest<EnvironmentCollectionJsonModel, Models.Environment[]>(message, m => m.ToEnvironmentCollection());
         }
 
-        public async Task<Models.PowerAutomate[]> GetPowerAutomates(Models.Environment environment)
+        public async Task<Models.PowerAutomate[]> GetPowerAutomates(Environment environment)
         {
             var message = new HttpRequestMessage()
             {
@@ -32,10 +35,32 @@ namespace Vermaat.PowerPlatform.Management
                 RequestUri = new Uri($"https://{_endpointInfo.PowerAutomateEndpoint}/providers/Microsoft.ProcessSimple/scopes/admin/environments/{environment.PowerAppIdentifier}/flows?api-version={_apiVersion}")
             };
 
-            return await SendRequest<PowerAutomateCollectionJsonModel, Models.PowerAutomate[]>(message, m => m.ToPowerAutomateCollection());
+            return await SendRequest<PowerAutomateCollectionJsonModel, PowerAutomate[]>(message, m => m.ToPowerAutomateCollection());
         }
 
-        public async Task<Models.PowerAutomateRun[]> GetPowerAutomateRunHistory(Models.Environment environment, Models.PowerAutomate powerAutomate)
+        public async Task DisablePowerAutomate(Environment environment, PowerAutomate powerAutomate)
+        {
+            var message = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri($"https://{_endpointInfo.PowerAutomateEndpoint}/providers/Microsoft.ProcessSimple/scopes/admin/environments/{environment.PowerAppIdentifier}/flows/{powerAutomate.PowerAppIdentifier}/stop?api-version={_apiVersion}")
+            };
+
+            await SendRequest(message);
+        }
+
+        public async Task EnablePowerAutomate(Environment environment, PowerAutomate powerAutomate)
+        {
+            var message = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri($"https://{_endpointInfo.PowerAutomateEndpoint}/providers/Microsoft.ProcessSimple/scopes/admin/environments/{environment.PowerAppIdentifier}/flows/{powerAutomate.PowerAppIdentifier}/start?api-version={_apiVersion}")
+            };
+
+            await SendRequest(message);
+        }
+
+        public async Task<PowerAutomateRun[]> GetPowerAutomateRunHistory(Environment environment, PowerAutomate powerAutomate)
         {
             var message = new HttpRequestMessage()
             {
@@ -43,7 +68,7 @@ namespace Vermaat.PowerPlatform.Management
                 RequestUri = new Uri($"https://{_endpointInfo.PowerAutomateEndpoint}/providers/Microsoft.ProcessSimple/scopes/admin/environments/{environment.PowerAppIdentifier}/flows/{powerAutomate.PowerAppIdentifier}/runs?api-version={_apiVersion}")
             };
 
-            return await SendRequest<PowerAutomateRunCollectionJsonModel, Models.PowerAutomateRun[]>(message, m => m.ToPowerAutomateCollection());
+            return await SendRequest<PowerAutomateRunCollectionJsonModel, PowerAutomateRun[]>(message, m => m.ToPowerAutomateCollection());
         }
     }
 }

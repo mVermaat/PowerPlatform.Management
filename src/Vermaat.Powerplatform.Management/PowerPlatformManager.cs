@@ -23,7 +23,10 @@ namespace Vermaat.PowerPlatform.Management
             _httpClient = new HttpClient();
         }
 
-        protected async Task<TConverted> SendRequest<TSuccess, TConverted>(HttpRequestMessage request, 
+        protected async Task SendRequest(HttpRequestMessage request)
+            => await SendRequest<string, string>(request, r => r);
+
+        protected async Task<TConverted> SendRequest<TSuccess, TConverted>(HttpRequestMessage request,
             Func<TSuccess, TConverted> convertSuccessFunc)
         {
             var response = await SendRequest<TSuccess, string>(request);
