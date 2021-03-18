@@ -23,7 +23,7 @@ namespace Vermaat.PowerPlatform.Management
             var message = new HttpRequestMessage()
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://{_endpointInfo.PowerAppEndpoint}/providers/Microsoft.PowerApps/environments?`$expand=permissions&api-version={_apiVersion}")
+                RequestUri = new Uri($"https://{EndpointInfo.PowerAppEndpoint}/providers/Microsoft.PowerApps/environments?`$expand=permissions&api-version={_apiVersion}")
             };
 
             return await SendRequest<EnvironmentCollectionJsonModel, Environment[]>(message, m => m.ToEnvironmentCollection());
@@ -34,7 +34,7 @@ namespace Vermaat.PowerPlatform.Management
             var message = new HttpRequestMessage()
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://{_endpointInfo.PowerAutomateEndpoint}/providers/Microsoft.ProcessSimple/environments/{environment.PowerAppIdentifier}/flows?api-version={_apiVersion}")
+                RequestUri = new Uri($"https://{EndpointInfo.PowerAutomateEndpoint}/providers/Microsoft.ProcessSimple/environments/{environment.PowerAppIdentifier}/flows?api-version={_apiVersion}")
             };
 
             return await SendRequest<PowerAutomateCollectionJsonModel, PowerAutomate[]>(message, m => m.ToPowerAutomateCollection());

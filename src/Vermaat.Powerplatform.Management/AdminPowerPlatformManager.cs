@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Vermaat.PowerPlatform.Management.JsonModels;
 using Vermaat.PowerPlatform.Management.Models;
@@ -21,7 +23,7 @@ namespace Vermaat.PowerPlatform.Management
             var message = new HttpRequestMessage()
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://{_endpointInfo.BapEndpoint}/providers/Microsoft.BusinessAppPlatform/scopes/admin/environments?$expand=permissions&api-version={_apiVersion}")
+                RequestUri = new Uri($"https://{EndpointInfo.BapEndpoint}/providers/Microsoft.BusinessAppPlatform/scopes/admin/environments?$expand=permissions&api-version={_apiVersion}")
             };
 
             return await SendRequest<EnvironmentCollectionJsonModel, Models.Environment[]>(message, m => m.ToEnvironmentCollection());
@@ -32,7 +34,7 @@ namespace Vermaat.PowerPlatform.Management
             var message = new HttpRequestMessage()
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://{_endpointInfo.PowerAutomateEndpoint}/providers/Microsoft.ProcessSimple/scopes/admin/environments/{environment.PowerAppIdentifier}/flows?api-version={_apiVersion}")
+                RequestUri = new Uri($"https://{EndpointInfo.PowerAutomateEndpoint}/providers/Microsoft.ProcessSimple/scopes/admin/environments/{environment.PowerAppIdentifier}/flows?api-version={_apiVersion}")
             };
 
             return await SendRequest<PowerAutomateCollectionJsonModel, PowerAutomate[]>(message, m => m.ToPowerAutomateCollection());
@@ -43,7 +45,7 @@ namespace Vermaat.PowerPlatform.Management
             var message = new HttpRequestMessage()
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri($"https://{_endpointInfo.PowerAutomateEndpoint}/providers/Microsoft.ProcessSimple/scopes/admin/environments/{environment.PowerAppIdentifier}/flows/{powerAutomate.PowerAppIdentifier}/stop?api-version={_apiVersion}")
+                RequestUri = new Uri($"https://{EndpointInfo.PowerAutomateEndpoint}/providers/Microsoft.ProcessSimple/scopes/admin/environments/{environment.PowerAppIdentifier}/flows/{powerAutomate.PowerAppIdentifier}/stop?api-version={_apiVersion}")
             };
 
             await SendRequest(message);
@@ -54,7 +56,7 @@ namespace Vermaat.PowerPlatform.Management
             var message = new HttpRequestMessage()
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri($"https://{_endpointInfo.PowerAutomateEndpoint}/providers/Microsoft.ProcessSimple/scopes/admin/environments/{environment.PowerAppIdentifier}/flows/{powerAutomate.PowerAppIdentifier}/start?api-version={_apiVersion}")
+                RequestUri = new Uri($"https://{EndpointInfo.PowerAutomateEndpoint}/providers/Microsoft.ProcessSimple/scopes/admin/environments/{environment.PowerAppIdentifier}/flows/{powerAutomate.PowerAppIdentifier}/start?api-version={_apiVersion}")
             };
 
             await SendRequest(message);
@@ -65,10 +67,35 @@ namespace Vermaat.PowerPlatform.Management
             var message = new HttpRequestMessage()
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://{_endpointInfo.PowerAutomateEndpoint}/providers/Microsoft.ProcessSimple/scopes/admin/environments/{environment.PowerAppIdentifier}/flows/{powerAutomate.PowerAppIdentifier}/runs?api-version={_apiVersion}")
+                RequestUri = new Uri($"https://{EndpointInfo.PowerAutomateEndpoint}/providers/Microsoft.ProcessSimple/scopes/admin/environments/{environment.PowerAppIdentifier}/flows/{powerAutomate.PowerAppIdentifier}/runs?api-version={_apiVersion}")
             };
 
             return await SendRequest<PowerAutomateRunCollectionJsonModel, PowerAutomateRun[]>(message, m => m.ToPowerAutomateCollection());
+        }
+
+        public async Task CreateConnection(Environment environment, Connection connection)
+        {
+            string payload = JsonConvert.SerializeObject(new CreateConnectionJsonModel(environment), JsonSerializeSettings);
+            var message = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Put,
+                RequestUri = new Uri($"https://{EndpointInfo.PowerAppEndpoint}/providers/Microsoft.PowerApps/apis/{connection.Type}/connections/{connection.Id}/?api-version=2020-06-01&$filter=environment%20eq%20%27{environment.PowerAppIdentifier}%27"),
+                Content = new StringContent(payload, Encoding.UTF8, "application/json")
+            };
+
+            await SendRequest(message);
+        }
+
+
+        public async Task<Connection[]> GetConnections(Environment environment)
+        {
+            var message = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"https://{EndpointInfo.PowerAppEndpoint}/providers/Microsoft.PowerApps/scopes/admin/environments/{environment.PowerAppIdentifier}/connections?api-version={_apiVersion}")
+            };
+
+            return await SendRequest<ConnectionsCollectionJsonModel, Connection[]>(message, m => m.ToConnectionCollection());
         }
     }
 }
