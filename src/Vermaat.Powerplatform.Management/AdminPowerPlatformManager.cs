@@ -73,20 +73,6 @@ namespace Vermaat.PowerPlatform.Management
             return await SendRequest<PowerAutomateRunCollectionJsonModel, PowerAutomateRun[]>(message, m => m.ToPowerAutomateCollection());
         }
 
-        public async Task CreateConnection(Environment environment, Connection connection)
-        {
-            string payload = JsonConvert.SerializeObject(new CreateConnectionJsonModel(environment), JsonSerializeSettings);
-            var message = new HttpRequestMessage()
-            {
-                Method = HttpMethod.Put,
-                RequestUri = new Uri($"https://{EndpointInfo.PowerAppEndpoint}/providers/Microsoft.PowerApps/apis/{connection.Type}/connections/{connection.Id}/?api-version=2020-06-01&$filter=environment%20eq%20%27{environment.PowerAppIdentifier}%27"),
-                Content = new StringContent(payload, Encoding.UTF8, "application/json")
-            };
-
-            await SendRequest(message);
-        }
-
-
         public async Task<Connection[]> GetConnections(Environment environment)
         {
             var message = new HttpRequestMessage()
