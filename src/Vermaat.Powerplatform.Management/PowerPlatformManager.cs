@@ -10,17 +10,20 @@ namespace Vermaat.PowerPlatform.Management
     {
         protected const string _apiVersion = "2016-11-01";
 
-        protected TokenManager _tokenManager { get; private set; }
-        protected HttpClient _httpClient { get; private set; }
-        protected EndpointInfo _endpointInfo { get; private set; }
+        protected TokenManager TokenManager { get; private set; }
+        protected HttpClient HttpClient { get; private set; }
+        protected EndpointInfo EndpointInfo { get; private set; }
+        protected JsonSerializerSettings JsonSerializeSettings { get; private set; }
+
 
         private bool _disposedValue;
 
         public PowerPlatformManager(TokenManager tokenManager)
         {
-            _tokenManager = tokenManager;
-            _endpointInfo = tokenManager.EndpointInfo;
-            _httpClient = new HttpClient();
+            TokenManager = tokenManager;
+            EndpointInfo = tokenManager.EndpointInfo;
+            JsonSerializeSettings = new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore };
+            HttpClient = new HttpClient();
         }
 
         protected async Task SendRequest(HttpRequestMessage request)
@@ -39,9 +42,9 @@ namespace Vermaat.PowerPlatform.Management
 
         private async Task<DeserializedResponse<TSuccess, TError>> SendRequest<TSuccess, TError>(HttpRequestMessage request)
         {
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await _tokenManager.GetToken());
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await TokenManager.GetToken());
 
-            var response = await _httpClient.SendAsync(request);
+            var response = await HttpClient.SendAsync(request);
             var result = new DeserializedResponse<TSuccess, TError>()
             {
                 Success = response.IsSuccessStatusCode,
@@ -72,7 +75,7 @@ namespace Vermaat.PowerPlatform.Management
             {
                 if (disposing)
                 {
-                    _httpClient.Dispose();
+                    HttpClient.Dispose();
                 }
                 _disposedValue = true;
             }
