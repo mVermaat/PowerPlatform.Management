@@ -10,7 +10,7 @@ Write-Host "Branch: $branch"
 Write-Host "Build: $buildNumber"
 
 
-if($branch -eq "refs/heads/master") {
+if($branch -eq "refs/heads/main") {
     Write-Host "##vso[task.setvariable variable=NuGetVersion;]$buildNumber"
     Write-Host "##vso[task.setvariable variable=CreateNuGetPackage;]true"    
 }
