@@ -42,6 +42,16 @@ namespace Vermaat.PowerPlatform.Management
             return await SendRequest<PowerAutomateCollectionJsonModel, PowerAutomate[]>(message, m => m.ToPowerAutomateCollection());
         }
 
+        public async Task<Connector[]> GetConnectors(Environment environment)
+        {
+            var message = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"https://{EndpointInfo.PowerAppEndpoint}/providers/Microsoft.PowerApps/apis?api-version={_apiVersion}&$filter=environment eq '{environment.PowerAppIdentifier}'")
+            };
+
+            return await SendRequest<ConnectorsCollectionJsonModel, Connector[]>(message, m => m.ToConnectorCollection());
+        }
        
         public async Task<Connection[]> GetConnections(Environment environment)
         {
