@@ -35,6 +35,17 @@ namespace Vermaat.PowerPlatform.Management.Test
             HasMatch(actualConnectionsPreDelete, existingConnections);
         }
 
+        [TestMethod]
+        public async Task TestGetConnectors()
+        {
+            var manager = new MakerPowerPlatformManager(new UsernamePasswordTokenManager(EndpointInfo.Prod, Username, Password));
+            var connectors = await manager.GetConnectors(TestEnvironment);
+
+            connectors.Should().NotBeNullOrEmpty();
+            connectors.Single(c => c.Name.Equals("shared_commondataserviceforapps", StringComparison.OrdinalIgnoreCase));
+        }
+
+
         private void HasMatch(Connection[] actualConnections, List<Connection> expectedConnections)
         {
             actualConnections.Should().NotBeNull();
