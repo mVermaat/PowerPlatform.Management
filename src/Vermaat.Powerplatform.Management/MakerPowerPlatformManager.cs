@@ -25,7 +25,7 @@ namespace Vermaat.PowerPlatform.Management
             var message = new HttpRequestMessage()
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://{EndpointInfo.PowerAppEndpoint}/providers/Microsoft.PowerApps/environments?`$expand=permissions&api-version={_apiVersion}")
+                RequestUri = new Uri($"https://{EndpointInfo.PowerAutomateEndpoint}/providers/Microsoft.ProcessSimple/environments?`$expand=permissions&api-version={_apiVersion}")
             };
 
             return await SendRequest<EnvironmentCollectionJsonModel, Environment[]>(message, m => m.ToEnvironmentCollection());
